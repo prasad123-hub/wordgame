@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  # Production Node.js application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wordgame-server-prod
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      NODE_ENV: production
+      PORT: 8000
+      # Production database URI - set this via environment variable or .env file
+      MONGODB_URI: ${MONGODB_URI}
+      CORS_ORIGIN: ${CORS_ORIGIN:-*}
+    networks:
+      - wordgame-prod-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8000/', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  wordgame-prod-network:
+    driver: bridge

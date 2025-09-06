@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # MongoDB database for development
+  mongodb:
+    image: mongo:7.0
+    container_name: wordgame-mongodb-dev
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: wordgame
+    volumes:
+      - mongodb_dev_data:/data/db
+    networks:
+      - wordgame-dev-network
+
+  # Node.js application for development
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: wordgame-server-dev
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      NODE_ENV: development
+      PORT: 8000
+      MONGODB_URI: mongodb://admin:password123@mongodb:27017
+      CORS_ORIGIN: "*"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
+    networks:
+      - wordgame-dev-network
+    command: yarn dev
+
+volumes:
+  mongodb_dev_data:
+
+networks:
+  wordgame-dev-network:
+    driver: bridge
