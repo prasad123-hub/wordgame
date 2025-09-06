@@ -22,6 +22,7 @@ jobs:
       
     - name: Build the Docker image
       run: docker build -t wordgame .
+      working-directory: ./server
 
     - name: Push to DockerHub
       run: docker push ${{secrets.DOCKER_USERNAME}}/wordgame:latest
