@@ -7,7 +7,7 @@ import morganMiddleware from "./logger/morgan.logger.js";
 const app = express();
 const httpServer = createServer(app);
 
-// Global Middlewares (for all routes)
+// Global Middlewares
 app.use(
   cors({
     origin:
