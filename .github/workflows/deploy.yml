@@ -25,5 +25,5 @@ jobs:
       working-directory: ./server
 
     - name: Push to DockerHub
-      run: docker push ${{secrets.DOCKER_USERNAME}}/wordgame:latest
+      run: docker push prasadnarkhedkar/wordgame:latest
       
