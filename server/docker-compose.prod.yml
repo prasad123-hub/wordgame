@@ -24,6 +24,17 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    # Limit container resources to prevent excessive disk usage
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+    # Use tmpfs for temporary files to reduce disk usage
+    tmpfs:
+      - /tmp:noexec,nosuid,size=100m
+      - /var/tmp:noexec,nosuid,size=50m
 
 networks:
   wordgame-prod-network:
