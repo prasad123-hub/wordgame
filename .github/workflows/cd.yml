@@ -26,12 +26,12 @@ jobs:
     - name: Stop existing containers
       run: |
         cd server
-        sudo docker-compose -f docker-compose.prod.yml down || true
+        sudo docker compose -f docker-compose.prod.yml down || true
 
     - name: Build and start application
       run: |
         cd server
-        sudo docker-compose -f docker-compose.prod.yml up -d --build
+        sudo docker compose -f docker-compose.prod.yml up -d --build
 
     - name: Verify deployment
       run: |
