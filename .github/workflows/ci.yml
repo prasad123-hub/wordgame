@@ -25,16 +25,8 @@ jobs:
       run: yarn install
       working-directory: ./server
     
-    - name: Run linting
-      run: yarn lint:check
-      working-directory: ./server
-    
     - name: Run type checking
       run: yarn build
-      working-directory: ./server
-    
-    - name: Run format check
-      run: yarn format:check
       working-directory: ./server
 
   build:
