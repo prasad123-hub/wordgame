@@ -49,5 +49,5 @@ const userSchema = new Schema<IUser>(
   }
 );
 
-// Create and export the User model
+// Create and export the User model with timestamps
 export const User = mongoose.model<IUser>("User", userSchema);
