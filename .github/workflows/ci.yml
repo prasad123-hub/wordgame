@@ -8,12 +8,42 @@ on:
 
 jobs:
 
-  build:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'yarn'
+        cache-dependency-path: server/yarn.lock
+    
+    - name: Install dependencies
+      run: yarn install
+      working-directory: ./server
+    
+    - name: Run linting
+      run: yarn lint:check
+      working-directory: ./server
+    
+    - name: Run type checking
+      run: yarn build
+      working-directory: ./server
+    
+    - name: Run format check
+      run: yarn format:check
+      working-directory: ./server
 
+  build:
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+    
     - name: Login DockerHub
       env:
         DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}

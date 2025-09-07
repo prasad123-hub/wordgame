@@ -7,17 +7,34 @@ on:
 
 jobs:
 
-  build:
+  deploy:
 
     runs-on: self-hosted
 
     steps:
-    - name: Pull the Docker image
-      run: sudo docker pull prasadnarkhedkar/wordgame:latest
+    - name: Checkout code
+      uses: actions/checkout@v4
 
-    - name: Delete the existing container
-      run: sudo docker rm -f wordgame-container || true
+    - name: Set up environment file
+      run: |
+        echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" > server/.env
+        echo "NODE_ENV=production" >> server/.env
+        echo "PORT=8000" >> server/.env
+        echo "CORS_ORIGIN=${{ secrets.CORS_ORIGIN || '*' }}" >> server/.env
+        echo "LOG_LEVEL=${{ secrets.LOG_LEVEL || 'info' }}" >> server/.env
 
-    - name: Run the Docker container
-      run: sudo docker run -d -p 8000:8000 --name wordgame-container -e MONGODB_URI=${{ secrets.MONGODB_URI }} prasadnarkhedkar/wordgame:latest
+    - name: Stop existing containers
+      run: |
+        cd server
+        sudo docker-compose -f docker-compose.prod.yml down || true
+
+    - name: Build and start application
+      run: |
+        cd server
+        sudo docker-compose -f docker-compose.prod.yml up -d --build
+
+    - name: Verify deployment
+      run: |
+        sleep 10
+        curl -f http://localhost:8000/ || exit 1
 
