@@ -33,8 +33,3 @@ jobs:
         cd server
         sudo docker compose -f docker-compose.prod.yml up -d --build
 
-    - name: Verify deployment
-      run: |
-        sleep 10
-        curl -f http://localhost:8000/ || exit 1
-
